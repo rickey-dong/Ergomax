@@ -28,10 +28,19 @@ while True:
         ##
         # BEGIN FEATURE EXTRACTION
         # (labeling the eyes, nose, etc.)
-        feature_extraction(img_file)
+        
+        image = tf.io.read_file("current_image.jpg")
+        image = tf.image.decode_jpeg(image)
+
+        keypoints_of_current_pose = feature_extraction(image)
+        
         #
         ##
         ###
+        
+        # quality assessment
+
+        has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose)
     
     count += 1
     cap.set(cv2.CAP_PROP_POS_FRAMES, count) # ?
@@ -76,4 +85,26 @@ def feature_extraction(image_file):
     outputs = model(image_file)
 
     keypoints_with_scores = outputs['output_0'].numpy()
-    return keypoints_with_scores
+
+    # converting this 4-layered array into 2d array that is 17 by 3
+    cleaner_2d_array = [ [0]*3 for i in range(17) ]
+    for ary0 in keypoints_with_scores:
+        for ary1 in ary0:
+            row = 0
+            for xyz in ary1:
+                index = 0
+                for num in xyz:
+                    cleaner_2d_array[row][index] = num
+                    index += 1
+                row += 1
+
+    return cleaner_2d_array
+
+def has_bad_posture(ideal, current):
+    """
+    returns true if user has bad posture currently,
+    false otherwise
+    """
+    # MATH
+    # A LOT OF MATH
+    pass
