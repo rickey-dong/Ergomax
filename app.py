@@ -13,41 +13,7 @@ vid = cv2.VideoCapture(0)
 count = 0
 path = "./"
 seconds = 50
-
 # every 50 ticks? read an image from the webcam
-
-while vid.isOpened():
-    ret, frame = vid.read()
-    # ret is True or False
-    # frame is the actual snapshot
-    if ret == False:
-        break
-
-    if count % seconds == 0:
-        cv2.imwrite(path + "current_image.jpg", frame)
-        # BEGIN FEATURE EXTRACTION
-        # (labeling the eyes, nose, etc.)
-        
-        image = tf.io.read_file("current_image.jpg")
-        image = tf.image.decode_jpeg(image)
-
-        keypoints_of_current_pose = feature_extraction(image)
-        
-        # quality assessment
-
-        has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose)
-    
-    count += 1
-    time.sleep(1)
-    vid.set(cv2.CAP_PROP_POS_FRAMES, count)
-
-    # press q button to quit
-
-    if cv2.waitKey(1) == ord('q'):
-        break
-
-vid.release()
-cv2.destroyAllWindows()
 
 """
 Load model from TensorFlow Hub.
@@ -61,7 +27,24 @@ We'll choose "movenet_lightning".
 """
 
 module = hub.load("https://tfhub.dev/google/movenet/singlepose/lightning/4")
-input_size = 192 # ?
+
+NOSE = 0
+LEFT_EYE = 1
+RIGHT_EYE = 2
+LEFT_EAR = 3
+RIGHT_EAR = 4
+LEFT_SHOULDER = 5
+RIGHT_SHOULDER = 6
+LEFT_ELBOW = 7
+RIGHT_ELBOW = 8
+LEFT_WRIST = 9
+RIGHT_WRIST = 10
+LEFT_HIP = 11
+RIGHT_HIP = 12
+LEFT_KNEE = 13
+RIGHT_KNEE = 14
+LEFT_ANKLE = 15
+RIGHT_ANKLE = 16
 
 def feature_extraction(image_file):
     """
@@ -96,27 +79,47 @@ def feature_extraction(image_file):
 
     return cleaner_2d_array
 
-NOSE = 0
-LEFT_EYE = 1
-RIGHT_EYE = 2
-LEFT_EAR = 3
-RIGHT_EAR = 4
-LEFT_SHOULDER = 5
-RIGHT_SHOULDER = 6
-LEFT_ELBOW = 7
-RIGHT_ELBOW = 8
-LEFT_WRIST = 9
-RIGHT_WRIST = 10
-LEFT_HIP = 11
-RIGHT_HIP = 12
-LEFT_KNEE = 13
-RIGHT_KNEE = 14
-LEFT_ANKLE = 15
-RIGHT_ANKLE = 16
-
 def has_bad_posture(ideal, current):
     """
     returns true if user has bad posture currently,
     false otherwise
     """
+
+while vid.isOpened():
+    ret, frame = vid.read()
+    # ret is True or False
+    # frame is the actual snapshot
+    if ret == False:
+        break
+
+    if count % seconds == 0:
+        cv2.imwrite(path + "current_image.jpg", frame)
+        # BEGIN FEATURE EXTRACTION
+        # (labeling the eyes, nose, etc.)
+        
+        # load the input image
+        image = tf.io.read_file("current_image.jpg")
+        image = tf.compat.v1.image.decode_jpeg(image)
+        image = tf.expand_dims(image, axis=0)
+
+        # resize and pad the image
+        # the PoseNet model expects 192 by 192 size
+        image = tf.cast(tf.image.resize_with_pad(image, 192, 192), dtype=tf.int32)
+
+        keypoints_of_current_pose = feature_extraction(image)
+        
+        # quality assessment
+
+        has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose)
     
+    count += 1
+    time.sleep(1)
+    vid.set(cv2.CAP_PROP_POS_FRAMES, count)
+
+    # press q button to quit
+
+    if cv2.waitKey(1) == ord('q'):
+        break
+
+vid.release()
+cv2.destroyAllWindows()
