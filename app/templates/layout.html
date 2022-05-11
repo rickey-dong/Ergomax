@@ -1,0 +1,34 @@
+{# This is the base template for the pages. #}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <nav>
+      <div>
+        <a id="home" href="/"> 🧸 Ergomax </a>
+      </div>
+      <div>
+        {% if user is defined and user is not none %}
+          <a id = "user">Hello there, {{user}}!</a>
+          <a id="logout"href="/logout">Logout</a>
+        {% else %}
+          <a id="login" href="/login">Login</a>
+          <a id="signup" href="/register">Signup</a>
+        {% endif %}
+      </div>
+    </nav>
+
+    <main>
+      {% block body %}{% endblock %}
+    </main>
+
+    <footer>
+      &copy; 2022 Ergomax
+      <br />
+      Rickey Dong, Yoonah Chang, Zhao Yu Lin, Rachel Xiao
+    </footer>
+  </body>
+</html>
