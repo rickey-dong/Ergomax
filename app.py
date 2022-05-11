@@ -71,6 +71,8 @@ def has_bad_posture(ideal, current):
     returns true if user has bad posture currently,
     false otherwise
     """
+    # useful article?
+    # https://medium.com/@priyaanka.garg/comparison-of-human-poses-with-posenet-e9ffc36b7427
 
 baseline_image = tf.io.read_file("baseline_image.jpg")
 baseline_image = tf.compat.v1.image.decode_jpeg(baseline_image)
