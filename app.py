@@ -3,6 +3,7 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import numpy as np
 import time
+import csv
 
 # VIDEO CAPTURING
 
@@ -71,6 +72,31 @@ def has_bad_posture(ideal, current):
     returns true if user has bad posture currently,
     false otherwise
     """
+    # MATH
+    # A LOT OF MATH
+    # https://pyimagesearch.com/2015/01/19/find-distance-camera-objectmarker-using-python-opencv/
+    good = {}
+    bad = {}
+
+    with open(ideal,'r') as csvfile:
+        lines = csv.reader(csvfile, delimiter=',')
+        for row in lines:
+            good[row[0]] = [float(row[1]), float(row[2]), float(row[3])]
+
+    with open(current,'r') as csvfile:
+        lines = csv.reader(csvfile, delimiter=',')
+        for row in lines:
+            bad[row[0]] = [float(row[1]), float(row[2]), float(row[3])]
+            #joint : [x, y, z]
+
+    if ((bad['left_shoulder'][1] >= good['left_shoulder'][1] + 0.01) or (bad['right_shoulder'][1] >= good['right_shoulder'][1] + 0.01)):
+        return 'BAD POSTURE'
+    if ((bad['left_elbow'][1] >= good['left_elbow'][1] + 0.01) or (bad['right_ear'][1] >= good['right_ear'][1] + 0.01)):
+        return 'BAD POSTURE'
+    return 'NICE'
+
+print(has_bad_posture('good.csv', 'bad.csv'))
+    
 
 while vid.isOpened():
     ret, frame = vid.read()
