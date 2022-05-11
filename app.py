@@ -2,9 +2,8 @@ import cv2
 import tensorflow as tf
 import tensorflow_hub as hub
 import numpy as np
+import time
 
-###
-##
 # VIDEO CAPTURING
 
 # define a video capture object
@@ -17,15 +16,15 @@ seconds = 50
 
 # every 50 ticks? read an image from the webcam
 
-while True:
-    ret, frame = cap.read()
+while vid.isOpened():
+    ret, frame = vid.read()
     # ret is True or False
     # frame is the actual snapshot
+    if ret == False:
+        break
 
     if count % seconds == 0:
-        cv2.imwrite(path + "current_image.jpg")
-        ###
-        ##
+        cv2.imwrite(path + "current_image.jpg", frame)
         # BEGIN FEATURE EXTRACTION
         # (labeling the eyes, nose, etc.)
         
@@ -34,24 +33,21 @@ while True:
 
         keypoints_of_current_pose = feature_extraction(image)
         
-        #
-        ##
-        ###
-        
         # quality assessment
 
         has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose)
     
     count += 1
-    cap.set(cv2.CAP_PROP_POS_FRAMES, count) # ?
+    time.sleep(1)
+    vid.set(cv2.CAP_PROP_POS_FRAMES, count)
 
     # press q button to quit
 
     if cv2.waitKey(1) == ord('q'):
         break
-#
-##
-###
+
+vid.release()
+cv2.destroyAllWindows()
 
 """
 Load model from TensorFlow Hub.
@@ -123,7 +119,4 @@ def has_bad_posture(ideal, current):
     returns true if user has bad posture currently,
     false otherwise
     """
-    # MATH
-    # A LOT OF MATH
-    # https://pyimagesearch.com/2015/01/19/find-distance-camera-objectmarker-using-python-opencv/
-    pass
+    
