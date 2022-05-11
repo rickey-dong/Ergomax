@@ -26,7 +26,8 @@ such as: "movenet_lightning", "movenet_thunder",
 We'll choose "movenet_lightning".
 """
 
-module = hub.load("https://tfhub.dev/google/movenet/singlepose/lightning/4")
+model = hub.load("https://tfhub.dev/google/movenet/singlepose/lightning/4")
+movenet = model.signautures['serving_default']
 
 NOSE = 0
 LEFT_EYE = 1
@@ -51,23 +52,19 @@ def feature_extraction(image_file):
     takes in an image
     and
     returns a list of all landmarks
-    with x, y, and confidence values
+    with y, x, and confidence values
     """
-    ### resize to expected input solution of the model ### to be cont.
-    
-    model = module.signatures['serving_default']
-
-    # movenet_lightning expects tensor type of int32
-    image_file = tf.cast(input_image, dtype=tf.int32)
 
     # run the model!
-    outputs = model(image_file)
+    outputs = movenet(image_file)
 
-    keypoints_with_scores = outputs['output_0'].numpy()
+    keypoints = outputs['output_0'].numpy()
 
-    # converting this 4-layered array into 2d array that is 17 by 3
+    # converting this 4-layered array into something more manageable
+    # i don't think we're too comfortable working with numpy so maybe
+    # better to convert
     cleaner_2d_array = [ [0]*3 for i in range(17) ]
-    for ary0 in keypoints_with_scores:
+    for ary0 in keypoints:
         for ary1 in ary0:
             row = 0
             for xyz in ary1:
@@ -106,10 +103,10 @@ while vid.isOpened():
         # the PoseNet model expects 192 by 192 size
         image = tf.cast(tf.image.resize_with_pad(image, 192, 192), dtype=tf.int32)
 
+        # extract features
         keypoints_of_current_pose = feature_extraction(image)
         
         # quality assessment
-
         has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose)
     
     count += 1
@@ -117,7 +114,6 @@ while vid.isOpened():
     vid.set(cv2.CAP_PROP_POS_FRAMES, count)
 
     # press q button to quit
-
     if cv2.waitKey(1) == ord('q'):
         break
 
