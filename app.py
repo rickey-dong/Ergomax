@@ -41,7 +41,7 @@ def feature_extraction(image_file):
     """
     takes in an image
     and
-    returns a list of all landmarks
+    returns a list of relevant landmarks
     with y, x, and confidence values
     """
 
@@ -53,16 +53,16 @@ def feature_extraction(image_file):
     # converting this 4-layered array into something more manageable
     # i don't think we're too comfortable working with numpy so maybe
     # better to convert
-    cleaner_2d_array = [ [0]*3 for i in range(17) ]
+    cleaner_2d_array = [ [0]*3 for i in range(7) ]
+    body_part = 0
     for ary0 in keypoints:
         for ary1 in ary0:
-            row = 0
-            for xyz in ary1:
+            while body_part < 7:
                 index = 0
-                for num in xyz:
-                    cleaner_2d_array[row][index] = num
+                for num in keypoints[0][0][body_part]:
+                    cleaner_2d_array[body_part][index] = num
                     index += 1
-                row += 1
+                body_part += 1
 
     return cleaner_2d_array
 
