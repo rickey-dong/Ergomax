@@ -72,9 +72,10 @@ def has_bad_posture(ideal, current):
     returns true if user has bad posture currently,
     false otherwise
     """
-    # MATH
-    # A LOT OF MATH
-    # https://pyimagesearch.com/2015/01/19/find-distance-camera-objectmarker-using-python-opencv/
+    # useful articles?
+    # https://medium.com/roonyx/pose-estimation-and-matching-with-tensorflow-lite-posenet-model-ea2e9249abbd
+    # https://medium.com/@priyaanka.garg/comparison-of-human-poses-with-posenet-e9ffc36b7427
+
     good = {}
     bad = {}
 
@@ -96,7 +97,6 @@ def has_bad_posture(ideal, current):
     return 'NICE'
 
 print(has_bad_posture('good.csv', 'bad.csv'))
-    
 
 while vid.isOpened():
     ret, frame = vid.read()
