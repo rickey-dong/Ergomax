@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %} Register {% endblock %}
+
+{% block body %}
+    <form method="post" action="/register">
+      <fieldset class="form-container dyn-small shadow">
+        <legend> Create an account </legend>
+        {% if explain is defined %}
+          <p style="color:red;">{{ explain }}</p>
+        {% endif %}
+        <input type="text" name="newusername" placeholder="Username">
+        <input type="password" name="newpassword" placeholder="Password">
+        <input type="submit" name="sub" value="Sign Up">
+      </fieldset>
+    </form>
+    <a id="login" class="flex-center" href="/login">Already have an account? Log in</a>
+{% endblock %}

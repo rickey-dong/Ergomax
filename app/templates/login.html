@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %} Login {% endblock %}
+
+{% block body %}
+  <form method="post">
+    <fieldset class="form-container dyn-small shadow">
+      <legend> Enter your username and password </legend>
+      {% if explain is defined %}
+        <p style="color:red;">{{ explain }}</p>
+      {% endif %}
+      <!-- The pattern /\S+/ is regex for "no whitespace characters" -->
+      <input
+        placeholder="Username"
+        name="username"
+        required
+        pattern="\S+"
+        minlength="1"
+      />
+      <input
+        placeholder="Password"
+        name="password"
+        type="password"
+        required
+        pattern="\S+"
+        minlength="1"
+      />
+      <input type="submit" value="Login" />
+    </fieldset>
+  </form>
+  <a id="register" class="flex-center" href = "/register">Don't have an account? Sign up</a>
+{% endblock %}
