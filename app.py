@@ -27,7 +27,7 @@ We'll choose "movenet_lightning".
 """
 
 model = hub.load("https://tfhub.dev/google/movenet/singlepose/lightning/4")
-movenet = model.signautures['serving_default']
+movenet = model.signatures['serving_default']
 
 NOSE = 0
 LEFT_EYE = 1
