@@ -40,7 +40,7 @@ RIGHT_SHOULDER = 6
 Y = 0
 X = 1
 CONFIDENCE_VALUE = 2
-CONFIDENCE_THRESHOLD = 0.25
+CONFIDENCE_THRESHOLD = 0.26
 
 def feature_extraction(image_file):
     """
@@ -93,7 +93,7 @@ def has_bad_posture(ideal, current):
         current[RIGHT_EAR][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
         current[LEFT_SHOULDER][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
         current[RIGHT_SHOULDER][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD:
-            # if the model is less than 25% confident about the location of any
+            # if the model is less than 26% confident about the location of any
             # particular body point, then there's not enough data to make a guess
             # or could mean that the user is severely slouching and has most of the
             # body off camera
