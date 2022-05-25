@@ -37,6 +37,10 @@ LEFT_EAR = 3
 RIGHT_EAR = 4
 LEFT_SHOULDER = 5
 RIGHT_SHOULDER = 6
+Y = 0
+X = 1
+CONFIDENCE_VALUE = 2
+CONFIDENCE_THRESHOLD = 0.25
 
 def feature_extraction(image_file):
     """
@@ -83,13 +87,11 @@ def has_bad_posture(ideal, current):
     # https://medium.com/roonyx/pose-estimation-and-matching-with-tensorflow-lite-posenet-model-ea2e9249abbd
     # https://medium.com/@priyaanka.garg/comparison-of-human-poses-with-posenet-e9ffc36b7427
 
-    if ((current['left_shoulder'][0] >= ideal['left_shoulder'][0] + 0.01) or (current['right_shoulder'][0] >= ideal['right_shoulder'][0] + 0.01)):
+    if ((current[LEFT_SHOULDER][Y] >= ideal[LEFT_SHOULDER][Y] + 0.01) or (current[RIGHT_SHOULDER][Y] >= ideal[RIGHT_SHOULDER][Y] + 0.01)):
         return 'BAD POSTURE'
-    if ((current['left_elbow'][0] >= ideal['left_elbow'][0] + 0.01) or (current['right_ear'][0] >= ideal['right_ear'][0] + 0.01)):
+    if ((current[LEFT_EAR][Y] >= ideal[LEFT_EAR][Y] + 0.01) or (current[RIGHT_EAR][Y] >= ideal[RIGHT_EAR][Y] + 0.01)):
         return 'BAD POSTURE'
     return 'NICE'
-
-print(has_bad_posture('good.csv', 'bad.csv'))
 
 while vid.isOpened():
     ret, frame = vid.read()
