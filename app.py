@@ -67,6 +67,12 @@ def feature_extraction(image_file):
 
     return cleaner_2d_array
 
+baseline_image = tf.io.read_file("baseline_image.jpg")
+baseline_image = tf.compat.v1.image.decode_jpeg(baseline_image)
+baseline_image = tf.expand_dims(baseline_image, axis=0)
+baseline_image = tf.cast(tf.image.resize_with_pad(baseline_image, 192, 192), dtype=tf.int32)
+keypoints_of_ideal_pose = feature_extraction(baseline_image)
+
 def has_bad_posture(ideal, current):
     """
     returns true if user has bad posture currently,
