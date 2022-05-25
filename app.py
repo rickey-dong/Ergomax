@@ -86,7 +86,18 @@ def has_bad_posture(ideal, current):
     # useful articles?
     # https://medium.com/roonyx/pose-estimation-and-matching-with-tensorflow-lite-posenet-model-ea2e9249abbd
     # https://medium.com/@priyaanka.garg/comparison-of-human-poses-with-posenet-e9ffc36b7427
-
+    if current[NOSE][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
+        current[LEFT_EYE][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
+        current[RIGHT_EYE][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
+        current[LEFT_EAR][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
+        current[RIGHT_EAR][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
+        current[LEFT_SHOULDER][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
+        current[RIGHT_SHOULDER][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD:
+            # if the model is less than 25% confident about the location of any
+            # particular body point, then there's not enough data to make a guess
+            # or could mean that the user is severely slouching and has most of the
+            # body off camera
+            return 'NOT ENOUGH DATA'
     if ((current[LEFT_SHOULDER][Y] >= ideal[LEFT_SHOULDER][Y] + 0.01) or (current[RIGHT_SHOULDER][Y] >= ideal[RIGHT_SHOULDER][Y] + 0.01)):
         return 'BAD POSTURE'
     if ((current[LEFT_EAR][Y] >= ideal[LEFT_EAR][Y] + 0.01) or (current[RIGHT_EAR][Y] >= ideal[RIGHT_EAR][Y] + 0.01)):
