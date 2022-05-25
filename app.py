@@ -75,6 +75,7 @@ keypoints_of_ideal_pose = feature_extraction(baseline_image)
 
 def has_bad_posture(ideal, current):
     """
+    takes in two lists of keypoints and confidence values
     returns true if user has bad posture currently,
     false otherwise
     """
@@ -82,23 +83,9 @@ def has_bad_posture(ideal, current):
     # https://medium.com/roonyx/pose-estimation-and-matching-with-tensorflow-lite-posenet-model-ea2e9249abbd
     # https://medium.com/@priyaanka.garg/comparison-of-human-poses-with-posenet-e9ffc36b7427
 
-    good = {}
-    bad = {}
-
-    with open(ideal,'r') as csvfile:
-        lines = csv.reader(csvfile, delimiter=',')
-        for row in lines:
-            good[row[0]] = [float(row[1]), float(row[2]), float(row[3])]
-
-    with open(current,'r') as csvfile:
-        lines = csv.reader(csvfile, delimiter=',')
-        for row in lines:
-            bad[row[0]] = [float(row[1]), float(row[2]), float(row[3])]
-            #joint : [x, y, z]
-
-    if ((bad['left_shoulder'][1] >= good['left_shoulder'][1] + 0.01) or (bad['right_shoulder'][1] >= good['right_shoulder'][1] + 0.01)):
+    if ((current['left_shoulder'][0] >= ideal['left_shoulder'][0] + 0.01) or (current['right_shoulder'][0] >= ideal['right_shoulder'][0] + 0.01)):
         return 'BAD POSTURE'
-    if ((bad['left_elbow'][1] >= good['left_elbow'][1] + 0.01) or (bad['right_ear'][1] >= good['right_ear'][1] + 0.01)):
+    if ((current['left_elbow'][0] >= ideal['left_elbow'][0] + 0.01) or (current['right_ear'][0] >= ideal['right_ear'][0] + 0.01)):
         return 'BAD POSTURE'
     return 'NICE'
 
