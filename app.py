@@ -98,6 +98,9 @@ def has_bad_posture(ideal, current):
             # or could mean that the user is severely slouching and has most of the
             # body off camera
             return 'NOT ENOUGH DATA'
+    # if current body landmarks y-coords are greater than the baseline,
+    # then that means the landmarks are further down than ideal, so could
+    # be indicative of slouching
     if ((current[LEFT_SHOULDER][Y] >= ideal[LEFT_SHOULDER][Y] + 0.01) or (current[RIGHT_SHOULDER][Y] >= ideal[RIGHT_SHOULDER][Y] + 0.01)):
         return 'BAD POSTURE'
     if ((current[LEFT_EAR][Y] >= ideal[LEFT_EAR][Y] + 0.01) or (current[RIGHT_EAR][Y] >= ideal[RIGHT_EAR][Y] + 0.01)):
