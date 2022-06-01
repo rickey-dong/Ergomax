@@ -4,6 +4,7 @@ import tensorflow_hub as hub
 import numpy as np
 import time
 import csv
+from numpy.linalg import norm
 
 # VIDEO CAPTURING
 
@@ -76,6 +77,10 @@ baseline_image = tf.compat.v1.image.decode_jpeg(baseline_image)
 baseline_image = tf.expand_dims(baseline_image, axis=0)
 baseline_image = tf.cast(tf.image.resize_with_pad(baseline_image, 192, 192), dtype=tf.int32)
 keypoints_of_ideal_pose = feature_extraction(baseline_image)
+
+def calculate_cosine_similarity(ideal, current):
+    cosine_similarity = np.sum(ideal*current, axis=1)/(norm(ideal, axis=1)*norm(current, axis=1))
+    return cosine_similarity
 
 def has_bad_posture(ideal, current):
     """
