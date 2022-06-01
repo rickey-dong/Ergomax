@@ -103,6 +103,10 @@ def has_bad_posture(ideal, current):
             # or could mean that the user is severely slouching and has most of the
             # body off camera
             return 'NOT ENOUGH DATA'
+    cos_sims = calculate_cosine_similarity(ideal, current)
+    for sim_value in cos_sims:
+        if sim_value < 0.4:
+            return 'NOT SIMILAR POSTURE'
     # if current body landmarks y-coords are greater than the baseline,
     # then that means the landmarks are further down than ideal, so could
     # be indicative of slouching
