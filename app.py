@@ -79,8 +79,10 @@ baseline_image = tf.cast(tf.image.resize_with_pad(baseline_image, 192, 192), dty
 keypoints_of_ideal_pose = feature_extraction(baseline_image)
 
 def calculate_cosine_similarity(ideal, current):
-    cosine_similarity = np.sum(ideal*current, axis=1)/(norm(ideal, axis=1)*norm(current, axis=1))
-    return cosine_similarity
+    A = np.array(ideal)
+    B = np.array(current)
+    cosine = np.sum(A*B, axis=1)/(norm(A, axis=1)*norm(B, axis=1))
+    return cosine
 
 def has_bad_posture(ideal, current):
     """
