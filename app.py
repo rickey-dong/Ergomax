@@ -3,7 +3,6 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import numpy as np
 import time
-import csv
 from numpy.linalg import norm
 
 # VIDEO CAPTURING
