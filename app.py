@@ -59,7 +59,7 @@ We'll choose "movenet_lightning".
 
 #     return cleaner_2d_array
 
-# baseline_image = tf.io.read_file("baseline-rickey.jpg")
+# baseline_image = tf.io.read_file("baseline.jpg")
 # baseline_image = tf.compat.v1.image.decode_jpeg(baseline_image)
 # baseline_image = tf.expand_dims(baseline_image, axis=0)
 # baseline_image = tf.cast(tf.image.resize_with_pad(baseline_image, 192, 192), dtype=tf.int32)
@@ -120,8 +120,7 @@ def read_camera():
         if ret == False:
             break
         if current_frame % frames == 0:
-            print("YOOO")
-            cv2.imwrite("camera_frames/current_image%d.jpg" % current_frame, frame)
+            cv2.imwrite("current.jpg", frame)
             # BEGIN FEATURE EXTRACTION
             # (labeling the eyes, nose, etc.)
             
