@@ -2,7 +2,6 @@ import cv2
 import tensorflow as tf
 import tensorflow_hub as hub
 import numpy as np
-import time
 from numpy.linalg import norm
 
 # VIDEO CAPTURING
@@ -11,10 +10,9 @@ from numpy.linalg import norm
 # with the built-in webcam device
 vid = cv2.VideoCapture(0)
 
-count = 0
-path = "./"
-seconds = 50
-# every 50 ticks? read an image from the webcam
+seconds = 10 # every 10 seconds take a snapshot of pose
+fps = vid.get(cv2.CAP_PROP_FPS) # gets frame rate attribute
+frames = fps * seconds # every (fps*seconds) frames, take a pic of pose
 
 """
 Load model from TensorFlow Hub.
@@ -71,7 +69,7 @@ def feature_extraction(image_file):
 
     return cleaner_2d_array
 
-baseline_image = tf.io.read_file("baseline_image.jpg")
+baseline_image = tf.io.read_file("baseline-rickey.jpg")
 baseline_image = tf.compat.v1.image.decode_jpeg(baseline_image)
 baseline_image = tf.expand_dims(baseline_image, axis=0)
 baseline_image = tf.cast(tf.image.resize_with_pad(baseline_image, 192, 192), dtype=tf.int32)
@@ -123,31 +121,29 @@ while vid.isOpened():
     # frame is the actual snapshot
     if ret == False:
         break
+    
+    frameID = vid.get(cv2.CAP_PROP_POS_FRAMES) # gets a 0-based index of the frame to be decoded/captured next
 
-    if count % seconds == 0:
-        cv2.imwrite(path + "current_image.jpg", frame)
+    if frameID % frames == 0:
+        cv2.imwrite("camera_feed/current_image%d.jpg" % frameID, frame)
         # BEGIN FEATURE EXTRACTION
         # (labeling the eyes, nose, etc.)
         
         # load the input image
-        image = tf.io.read_file("current_image.jpg")
-        image = tf.compat.v1.image.decode_jpeg(image)
-        image = tf.expand_dims(image, axis=0)
+            # image = tf.io.read_file("current_image.jpg")
+            # image = tf.compat.v1.image.decode_jpeg(image)
+            # image = tf.expand_dims(image, axis=0)
 
-        # resize and pad the image
-        # the PoseNet model expects 192 by 192 size
-        image = tf.cast(tf.image.resize_with_pad(image, 192, 192), dtype=tf.int32)
+            # # resize and pad the image
+            # # the PoseNet model expects 192 by 192 size
+            # image = tf.cast(tf.image.resize_with_pad(image, 192, 192), dtype=tf.int32)
 
-        # extract features
-        keypoints_of_current_pose = feature_extraction(image)
-        
-        # quality assessment
-        has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose)
+            # # extract features
+            # keypoints_of_current_pose = feature_extraction(image)
+            
+            # # quality assessment
+            # has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose)
     
-    count += 1
-    time.sleep(1)
-    vid.set(cv2.CAP_PROP_POS_FRAMES, count)
-
     # press q button to quit
     if cv2.waitKey(1) == ord('q'):
         break
