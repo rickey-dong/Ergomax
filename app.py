@@ -108,8 +108,9 @@ We'll choose "movenet_lightning".
 def read_camera():
     # define a video capture object
     # with the built-in webcam device
+    current_frame = 0
     vid = cv2.VideoCapture(0)
-    seconds = 10 # every 10 seconds take a snapshot of pose
+    seconds = 4 # every 10 seconds take a snapshot of pose
     fps = vid.get(cv2.CAP_PROP_FPS) # gets frame rate attribute
     frames = fps * seconds # every (fps*seconds) frames, take a pic of pose
     while vid.isOpened():
@@ -118,11 +119,9 @@ def read_camera():
         # frame is the actual snapshot
         if ret == False:
             break
-        
-        frameID = vid.get(cv2.CAP_PROP_POS_FRAMES) # gets a 0-based index of the frame to be decoded/captured next
-
-        if frameID % frames == 0:
-            cv2.imwrite("camera_feed/current_image%d.jpg" % frameID, frame)
+        if current_frame % frames == 0:
+            print("YOOO")
+            cv2.imwrite("camera_frames/current_image%d.jpg" % current_frame, frame)
             # BEGIN FEATURE EXTRACTION
             # (labeling the eyes, nose, etc.)
             
@@ -140,7 +139,7 @@ def read_camera():
                 
                 # # quality assessment
                 # has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose)
-        
+        current_frame += 1
         # press q button to quit
         if cv2.waitKey(1) == ord('q'):
             break
