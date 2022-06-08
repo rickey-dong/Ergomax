@@ -1,0 +1,11 @@
+webcam works on my laptop but not on desktop
+    is it because it's a USB wired camera?
+    or is it because WSL is being finicky?
+
+theoretically fps*seconds should = frames,
+    so for example if something were 30 fps
+    and snapshots every 4 seconds, it would
+    snapshot every 120 frames.
+    but my test run snapshotted did do every 120
+    frames but these 120 frames passed by in like 10
+    seconds even though i set seconds variable to 4.
