@@ -65,11 +65,23 @@ baseline_image = tf.expand_dims(baseline_image, axis=0)
 baseline_image = tf.cast(tf.image.resize_with_pad(baseline_image, 192, 192), dtype=tf.int32)
 keypoints_of_ideal_pose = feature_extraction(baseline_image)
 
-def calculate_cosine_similarity(ideal, current):
-    A = np.array(ideal)
-    B = np.array(current)
-    cosine = np.sum(A*B, axis=1)/(norm(A, axis=1)*norm(B, axis=1))
-    return cosine
+def calculate_cosine_similarity(x, y):
+    
+    # Ensure length of x and y are the same
+    if len(x) != len(y) :
+        return None
+    
+    # Compute the dot product between x and y
+    dot_product = np.dot(x, y)
+    
+    # Compute the L2 norms (magnitudes) of x and y
+    magnitude_x = np.sqrt(np.sum([elem**2 for elem in x])) 
+    magnitude_y = np.sqrt(np.sum([elem**2 for elem in y]))
+    
+    # Compute the cosine similarity
+    cosine_similarity = dot_product / (magnitude_x * magnitude_y)
+    
+    return cosine_similarity
 
 def check_head_tilt(current):
     # if eyes are at ear level, then head is tilted
