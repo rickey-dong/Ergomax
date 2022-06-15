@@ -110,7 +110,7 @@ def read_camera():
     # with the built-in webcam device
     current_frame = 0
     vid = cv2.VideoCapture(0)
-    seconds = 4 # every 10 seconds take a snapshot of pose
+    seconds = 4 # every <> seconds take a snapshot of pose
     fps = vid.get(cv2.CAP_PROP_FPS) # gets frame rate attribute
     frames = fps * seconds # every (fps*seconds) frames, take a pic of pose
     while vid.isOpened():
