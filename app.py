@@ -91,6 +91,14 @@ def check_head_tilt(current):
       return False
     return True
 
+def check_slump(current):
+    # comparing shoulders vs. eyes
+    if current[LEFT_EYE][Y] > current[LEFT_SHOULDER] + 0.10:
+        return False
+    if current[RIGHT_EYE][Y] > current[RIGHT_SHOULDER] + 0.10:
+        return False
+    return True
+
 def has_bad_posture(ideal, current):
     """
     takes in two lists of keypoints and confidence values
