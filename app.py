@@ -64,7 +64,6 @@ def has_bad_posture(ideal, current):
     list_of_outputs.append(check_confidence_thresholds(current))
     list_of_outputs.append(check_current_deviations(ideal, current))
     list_of_outputs.append(check_head_tilt(current))
-    list_of_outputs.append(check_slump(current))
 
     if any(list_of_outputs):
         return "bad posture"

@@ -49,19 +49,11 @@ def check_current_deviations(baseline, current):
 
 def check_head_tilt(current):
     # if eyes are at ear level, then head is tilted
-    if current[LEFT_EYE][Y] > current[LEFT_EAR][Y] + 0.10:
-      return False
-    if current[RIGHT_EYE][Y] > current[RIGHT_EAR][Y] + 0.10:
-      return False
-    return True
-
-def check_slump(current):
-    # comparing shoulders vs. eyes
-    if current[LEFT_EYE][Y] > current[LEFT_SHOULDER] + 0.10:
-        return False
-    if current[RIGHT_EYE][Y] > current[RIGHT_SHOULDER] + 0.10:
-        return False
-    return True
+    if (current[LEFT_EYE][Y] < current[LEFT_EAR][Y] + 0.05) and (current[LEFT_EYE][Y] > current[LEFT_EAR][Y] - 0.05):
+        return True
+    if (current[RIGHT_EYE][Y] < current[RIGHT_EAR][Y] + 0.05) and (current[RIGHT_EYE][Y] > current[RIGHT_EAR][Y] - 0.05):
+        return True
+    return False
 
 def get_ratio(pose):
     left_eye = pose[LEFT_EYE]
