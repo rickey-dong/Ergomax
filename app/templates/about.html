@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %} About {% endblock %}
+{% block body %}
+<h2> 0 Our Goal </h2>
+<p>To create an application focused on maximizing an ergonomic lifestyle that uses image recognition to evaluate the user’s posture through their (front-facing) webcam and reminds them to adjust their posture. </p>
+<h2> 1 Description/Background of Minimum Viable Product </h2>
+<p> Ergomax is an app for anyone who wants to improve their posture and health in an online environment.  People often neglect or forget the importance of the way they sit or stand when focusing on their electronics. As more and more companies and people shift towards remote work and learning, it is more important than ever to maintain a proper posture to avoid back pains, tension, indigestion, and more.
+	To use Ergomax, users can first download our app from GitHub. To start using the app, users calibrate their desired posture. Users can have this desktop app running in the background while working on other tasks on their computer. The app will gently remind users to readjust their body position if they’re a certain degree off their desired posture by reading their stance through a live camera. Notifications will be subtle and not intrusive in order to stay healthy while being productive.
+<br> <br>The MVP will consist of:
+
+<ul>
+ <li>Downloadable app that uses video data and ideal posture references to help improve user health.</li>
+ <li>Alert ‘boundaries’ and notification for a set change/tilt in posture</li>
+ <li>App will be open-source and user’s video feed data will not be stored for privacy concerns</li>
+</ul>
+
+<h2> 2 Benefits</h2>
+<p>With the use of Ergomax, users will be able to track how often their posture is out of alignment.
+Oftentimes, people are not even aware of when they begin to slump in their chair, and prolonged bad posture can lead to many health risks for the body, including the circulatory and muscular systems, and it can even have effects on mental health including stress, mood, and fatigue.
+Using Ergomax, users can get nudged to improve their posture and sit up straight, which can be hard to maintain when focusing on work or school.
+Also, Ergomax can provide another health benefit by reminding users to drink water.
+By having a personalized data dashboard, users can monitor and analyze their own behaviors and habits and see where they need to improve.
+Our product/tool will be completely open-source. Ergomax won’t store or record anything about the user’s environment or video feed that can be considered a breach of privacy.
+</p>
+
+<h2> 3 Technology Platforms</h2>
+<ul>
+ <li>TensorFlow’s Posenet model was utilized to train the application to detect the calibrated and current posture of the user. </li>
+ <li>OpenCV’s open-source library was used for image processing and fetching/displaying video from the user’s webcam. </li>
+ <li>SQLite, Flask was used for the demo website. </li>
+</ul>
+
+<h2> 4 The Team</h2>
+<ul>
+ <li>Zhao Yu Lin</li>
+ <li>Yoonah Chang</li>
+ <li>Rickey Dong</li>
+ <li>Rachel Xiao</li>
+</ul>
+{% endblock %}
