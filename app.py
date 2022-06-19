@@ -1,8 +1,8 @@
 import cv2
 import tensorflow as tf
 import tensorflow_hub as hub
-import numpy as np
-from numpy.linalg import norm
+# import numpy as np
+# from numpy.linalg import norm
 
 """
 Load model from TensorFlow Hub.
@@ -161,20 +161,19 @@ def read_camera():
             # (labeling the eyes, nose, etc.)
             
             # load the input image
-                # image = tf.io.read_file("current_image.jpg")
-                # image = tf.compat.v1.image.decode_jpeg(image)
-                # image = tf.expand_dims(image, axis=0)
+            image = tf.io.read_file("current.jpg")
+            image = tf.compat.v1.image.decode_jpeg(image)
+            image = tf.expand_dims(image, axis=0)
 
-                # # resize and pad the image
-                # # the PoseNet model expects 192 by 192 size
-                # image = tf.cast(tf.image.resize_with_pad(image, 192, 192), dtype=tf.int32)
+            # resize and pad the image
+            # the PoseNet model expects 192 by 192 size
+            image = tf.cast(tf.image.resize_with_pad(image, 192, 192), dtype=tf.int32)
 
-                # # extract features
-                # keypoints_of_current_pose = feature_extraction(image)
-                
-                # # quality assessment
-                # if has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose) == "bad posture"
-                    #bad_posture_true += 1 #increases if user has bad posture when the program checks
+            # extract features
+            keypoints_of_current_pose = feature_extraction(image)
+            
+            # quality assessment
+            print(has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose))
         current_frame += 1
         # press q button to quit
         if cv2.waitKey(1) == ord('q'):
