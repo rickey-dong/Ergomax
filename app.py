@@ -1,8 +1,8 @@
 import cv2
 import tensorflow as tf
 import tensorflow_hub as hub
-import numpy as np
-from numpy.linalg import norm
+# import numpy as np
+# from numpy.linalg import norm
 
 """
 Load model from TensorFlow Hub.
@@ -120,10 +120,10 @@ def has_bad_posture(ideal, current):
             # or could mean that the user is severely slouching and has most of the
             # body off camera
             return 'NOT ENOUGH DATA'
-    cos_sims = calculate_cosine_similarity(ideal, current)
-    for sim_value in cos_sims:
-        if sim_value < 0.4:
-            return 'NOT SIMILAR POSTURE'
+    # cos_sims = calculate_cosine_similarity(ideal, current)
+    # for sim_value in cos_sims:
+    #     if sim_value < 0.4:
+    #         return 'NOT SIMILAR POSTURE'
     # if current body landmarks y-coords are greater than the baseline,
     # then that means the landmarks are further down than ideal, so could
     # be indicative of slouching
@@ -153,19 +153,19 @@ def read_camera():
             # (labeling the eyes, nose, etc.)
             
             # load the input image
-                # image = tf.io.read_file("current_image.jpg")
-                # image = tf.compat.v1.image.decode_jpeg(image)
-                # image = tf.expand_dims(image, axis=0)
+            image = tf.io.read_file("current.jpg")
+            image = tf.compat.v1.image.decode_jpeg(image)
+            image = tf.expand_dims(image, axis=0)
 
-                # # resize and pad the image
-                # # the PoseNet model expects 192 by 192 size
-                # image = tf.cast(tf.image.resize_with_pad(image, 192, 192), dtype=tf.int32)
+            # resize and pad the image
+            # the PoseNet model expects 192 by 192 size
+            image = tf.cast(tf.image.resize_with_pad(image, 192, 192), dtype=tf.int32)
 
-                # # extract features
-                # keypoints_of_current_pose = feature_extraction(image)
-                
-                # # quality assessment
-                # has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose)
+            # extract features
+            keypoints_of_current_pose = feature_extraction(image)
+            
+            # quality assessment
+            print(has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose))
         current_frame += 1
         # press q button to quit
         if cv2.waitKey(1) == ord('q'):
