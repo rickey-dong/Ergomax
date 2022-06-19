@@ -120,10 +120,17 @@ def has_bad_posture(ideal, current):
             # or could mean that the user is severely slouching and has most of the
             # body off camera
             return 'NOT ENOUGH DATA'
+    ###
+    #come back later maybe
     # cos_sims = calculate_cosine_similarity(ideal, current)
     # for sim_value in cos_sims:
     #     if sim_value < 0.4:
     #         return 'NOT SIMILAR POSTURE'
+    ###
+    if(check_head_tilt(current)):
+        return "BAD POSTURE"
+    if(check_slump(current)):
+        return "BAD POSTURE"
     # if current body landmarks y-coords are greater than the baseline,
     # then that means the landmarks are further down than ideal, so could
     # be indicative of slouching
@@ -139,8 +146,9 @@ def read_camera():
     current_frame = 0
     vid = cv2.VideoCapture(0)
     seconds = 4 # every <> seconds take a snapshot of pose
-    fps = vid.get(cv2.CAP_PROP_FPS) # gets frame rate attribute
+    fps = 30 # gets frame rate attribute
     frames = fps * seconds # every (fps*seconds) frames, take a pic of pose
+    #bad_posture_check = 0 #
     while vid.isOpened():
         ret, frame = vid.read()
         # ret is True or False
@@ -169,8 +177,10 @@ def read_camera():
         current_frame += 1
         # press q button to quit
         if cv2.waitKey(1) == ord('q'):
+            #reports how many checks is performed by the program
+            #total_amount of checks = current_frame % frames
             break
     vid.release()
     cv2.destroyAllWindows()
-
+    # percent_spent_in_bad_posture = bad_posture_check/total_amount of checks
 read_camera()
