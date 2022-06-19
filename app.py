@@ -148,6 +148,7 @@ def read_camera():
     seconds = 4 # every <> seconds take a snapshot of pose
     fps = 30 # gets frame rate attribute
     frames = fps * seconds # every (fps*seconds) frames, take a pic of pose
+    #bad_posture_check = 0 #
     while vid.isOpened():
         ret, frame = vid.read()
         # ret is True or False
@@ -172,12 +173,15 @@ def read_camera():
                 # keypoints_of_current_pose = feature_extraction(image)
                 
                 # # quality assessment
-                # has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose)
+                # if has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose) == "bad posture"
+                    # bad posture += 1 #increases if user has bad posture when the program checks
         current_frame += 1
         # press q button to quit
         if cv2.waitKey(1) == ord('q'):
+            #reports how many checks is performed by the program
+            #total_amount of checks = current_frame % frames
             break
     vid.release()
     cv2.destroyAllWindows()
-
+    # percent_spent_in_bad_posture = bad_posture_check/total_amount of checks
 read_camera()
