@@ -47,11 +47,18 @@ def check_current_deviations(baseline, current):
         return True
     return False
 
-def check_head_tilt(current):
+def check_head_tilt_down(current):
     # if eyes are at ear level, then head is tilted
     if (current[LEFT_EYE][Y] < current[LEFT_EAR][Y] + 0.05) and (current[LEFT_EYE][Y] > current[LEFT_EAR][Y] - 0.05):
         return True
     if (current[RIGHT_EYE][Y] < current[RIGHT_EAR][Y] + 0.05) and (current[RIGHT_EYE][Y] > current[RIGHT_EAR][Y] - 0.05):
+        return True
+    return False
+
+def check_head_tilt_up(current):
+    # if nose is super close to eyes, then head is tilted
+    average_eye_level = (current[LEFT_EYE][Y] + current[RIGHT_EYE][Y]) / 2
+    if current[NOSE][Y] < average_eye_level + 0.10:
         return True
     return False
 
