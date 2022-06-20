@@ -60,12 +60,14 @@ def has_bad_posture(ideal, current):
     false otherwise
     """
 
-    list_of_outputs = []
-    list_of_outputs.append(check_confidence_thresholds(current))
-    list_of_outputs.append(check_current_deviations(ideal, current))
-    list_of_outputs.append(check_head_tilt_down(current))
+    list_of_slouch_checks = []
+    list_of_slouch_checks.append(check_confidence_thresholds(current))
+    list_of_slouch_checks.append(check_current_deviations(ideal, current))
+    list_of_slouch_checks.append(check_head_tilt_down(current))
+    list_of_slouch_checks.append(check_head_tilt_up(current))
+    list_of_slouch_checks.append(compare_ratios(ideal, current))
 
-    if any(list_of_outputs):
+    if any(list_of_slouch_checks):
         return "bad posture"
     else:
         return "posture is fine"
