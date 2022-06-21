@@ -14,17 +14,18 @@ main {
   margin: 8px;
 }
 
+.text {
+  padding: 20px;
+  padding-right: 50px;
+  padding-left: 50px;
+}
+
 /* ==============================================
    Header tags
    ============================================== */
 h1 {
   text-align: center;
 }
-
-p {
-  text-align: center;
-}
-
 
 /* ==============================================
    Link tags
@@ -63,6 +64,16 @@ nav > div {
 
 nav * {
   color: white;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: white;
+  text-decoration: underline;
 }
 
 /* ==============================================
