@@ -1,39 +1,109 @@
 import numpy as np
-from numpy.linalg import norm
+
+# returning True means posture is bad
+# returning False means posture is fine
 
 def cosine_similarity(x, y):
-    
+    flattened_x = []
+    for body_point in x:
+        flattened_x.append(body_point[1])
+        flattened_x.append(body_point[0])
+
+    flattened_y = []
+    for body_point in y:
+        flattened_y.append(body_point[1])
+        flattened_y.append(body_point[0])
+
     # Ensure length of x and y are the same
-    if len(x) != len(y) :
+    if len(flattened_x) != len(flattened_y) :
         return None
     
     # Compute the dot product between x and y
-    dot_product = np.dot(x, y)
+    dot_product = np.dot(flattened_x, flattened_y)
     
     # Compute the L2 norms (magnitudes) of x and y
-    magnitude_x = np.sqrt(np.sum([elem**2 for elem in x])) 
-    magnitude_y = np.sqrt(np.sum([elem**2 for elem in y]))
+    magnitude_x = np.sqrt(np.sum([elem**2 for elem in flattened_x])) 
+    magnitude_y = np.sqrt(np.sum([elem**2 for elem in flattened_y]))
     
     # Compute the cosine similarity
     cosine_similarity = dot_product / (magnitude_x * magnitude_y)
     
-    return cosine_similarity
+    if cosine_similarity < 0.9985:
+        print("cosine similarity flagged")
+        return True
+    return False
 
-baseline = [[0.46785867, 0.51709616, 0.47278127], [0.40887773, 0.57265604, 0.6629583], [0.4054924, 0.4650981, 0.6734771], [0.45224398, 0.6265073, 0.5531765], [0.4420348, 0.40005693, 0.75642467], [0.68867874, 0.74766815, 0.44543105], [0.65519905, 0.31595695, 0.55321544]]
-current = [[0.47692168, 0.40884888, 0.6540798], [0.40350756, 0.44656464, 0.6504991], [0.4341948, 0.34083185, 0.7360759], [0.4257486, 0.5135157, 0.39856184], [0.49548003, 0.28694832, 0.47909486], [0.66387886, 0.66587484, 0.35898465], [0.6853894, 0.22712874, 0.4318123]]
+# baseline vs baseline1:
+    # 0.9993298873807803
+# baseline vs baseline2:
+    # 0.9995551628420549
+# baseline vs baseline3:
+    # 0.9993965149468059
+# baseline vs baseline4:
+    # 0.9993758514179505
+# baseline vs obv_slouch:
+    # 0.9302857957633502
+# baseline vs slight slouch 0:
+    # 0.9860961310786217
+# baseline vs slight slouch 1:
+    # 0.9799234224135736
+# baseline vs tilted head down:
+    # 0.9944372962466497
+# baseline vs tilted head up:
+    # 0.9981608678334515
 
-baseline_1D = []
-for body_point in baseline:
-    baseline_1D.append(body_point[1]) # x value
-    baseline_1D.append(body_point[0]) # y value
+# baseline1 vs baseline2:
+    # 0.9999051999294907
+# baseline1 vs baseline3:
+    # 0.9987372419759251
+# baseline1 vs baseline4:
+    # 0.9985801217768151
+# baseline1 vs obv_slouch:
+    # 0.9184389536888734
+# baseline1 vs slight slouch 0:
+    # 0.9838410572177648
+# baseline1 vs slight slouch 1:
+    # 0.976755503010334
+# baseline1 vs tilted head down:
+    # 0.9932992471947993
+# baseline1 vs tilted head up:
+    # 0.9967983804758207
 
-current_1D = []
-for body_point in current:
-    current_1D.append(body_point[1])
-    current_1D.append(body_point[0])
+# baseline2 vs baseline3:
+    # 0.9988139684856572
+# baseline2 vs baseline4:
+    # 0.9987056973091837
+# baseline2 vs obv_slouch:
+    # 0.9206884132292462
+# baseline2 vs slight slouch 0:
+    # 0.9836410547149325
+# baseline2 vs slight slouch 1:
+    # 0.9766708396910859
+# baseline2 vs tilted head down:
+    # 0.9934051477158049
+# baseline2 vs tilted head up:
+    # 0.9967966870799277
 
+# baseline3 vs baseline4:
+    # 0.9999523661478198
+# baseline3 vs obv_slouch:
+    # 0.9338583110680306
+# baseline3 vs slight slouch 0:
+    # 0.9909484809541146
+# baseline3 vs slight slouch 1:
+    # 0.9855980132694753
+# baseline3 vs tilted head down:
+    # 0.9973124424898395
+# baseline3 vs tilted head up:
+    # 0.9977737226929116
 
-print(cosine_similarity(
-    baseline_1D,
-    current_1D
-))
+# baseline4 vs obv_slouch:
+    # 0.9347970064728127
+# baseline4 vs slight slouch 0:
+    # 0.9910460682753853
+# baseline4 vs slight slouch 1:
+    # 0.9858846053353258
+# baseline4 vs tilted head down:
+    # 0.9974504234066857
+# baseline4 vs tilted head up:
+    # 0.997610859544836

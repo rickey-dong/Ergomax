@@ -1,8 +1,8 @@
 import cv2
 import tensorflow as tf
 import tensorflow_hub as hub
-# import numpy as np
-# from numpy.linalg import norm
+from cosine_similarity import *
+from quality_assessment import *
 
 """
 Load model from TensorFlow Hub.
@@ -17,18 +17,6 @@ We'll choose "movenet_lightning".
 
 model = hub.load("https://tfhub.dev/google/movenet/singlepose/lightning/4")
 movenet = model.signatures['serving_default']
-
-NOSE = 0
-LEFT_EYE = 1
-RIGHT_EYE = 2
-LEFT_EAR = 3
-RIGHT_EAR = 4
-LEFT_SHOULDER = 5
-RIGHT_SHOULDER = 6
-Y = 0
-X = 1
-CONFIDENCE_VALUE = 2
-CONFIDENCE_THRESHOLD = 0.26
 
 def feature_extraction(image_file):
     """
@@ -65,80 +53,25 @@ baseline_image = tf.expand_dims(baseline_image, axis=0)
 baseline_image = tf.cast(tf.image.resize_with_pad(baseline_image, 192, 192), dtype=tf.int32)
 keypoints_of_ideal_pose = feature_extraction(baseline_image)
 
-def calculate_cosine_similarity(x, y):
-    
-    # Ensure length of x and y are the same
-    if len(x) != len(y) :
-        return None
-    
-    # Compute the dot product between x and y
-    dot_product = np.dot(x, y)
-    
-    # Compute the L2 norms (magnitudes) of x and y
-    magnitude_x = np.sqrt(np.sum([elem**2 for elem in x])) 
-    magnitude_y = np.sqrt(np.sum([elem**2 for elem in y]))
-    
-    # Compute the cosine similarity
-    cosine_similarity = dot_product / (magnitude_x * magnitude_y)
-    
-    return cosine_similarity
-
-def check_head_tilt(current):
-    # if eyes are at ear level, then head is tilted
-    if current[LEFT_EYE][Y] > current[LEFT_EAR][Y] + 0.10:
-      return False
-    if current[RIGHT_EYE][Y] > current[RIGHT_EAR][Y] + 0.10:
-      return False
-    return True
-
-def check_slump(current):
-    # comparing shoulders vs. eyes
-    if current[LEFT_EYE][Y] > current[LEFT_SHOULDER] + 0.10:
-        return False
-    if current[RIGHT_EYE][Y] > current[RIGHT_SHOULDER] + 0.10:
-        return False
-    return True
-
 def has_bad_posture(ideal, current):
     """
     takes in two lists of keypoints and confidence values
     returns true if user has bad posture currently,
     false otherwise
     """
-    # useful articles?
-    # https://medium.com/roonyx/pose-estimation-and-matching-with-tensorflow-lite-posenet-model-ea2e9249abbd
-    # https://medium.com/@priyaanka.garg/comparison-of-human-poses-with-posenet-e9ffc36b7427
-    if current[NOSE][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
-        current[LEFT_EYE][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
-        current[RIGHT_EYE][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
-        current[LEFT_EAR][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
-        current[RIGHT_EAR][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
-        current[LEFT_SHOULDER][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
-        current[RIGHT_SHOULDER][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD:
-            # if the model is less than 26% confident about the location of any
-            # particular body point, then there's not enough data to make a guess
-            # or could mean that the user is severely slouching and has most of the
-            # body off camera
-            return 'NOT ENOUGH DATA'
-    ###
-    #come back later maybe
-    # cos_sims = calculate_cosine_similarity(ideal, current)
-    # for sim_value in cos_sims:
-    #     if sim_value < 0.4:
-    #         return 'NOT SIMILAR POSTURE'
-    ###
-    if(check_head_tilt(current)):
-        return "BAD POSTURE"
-    if(check_slump(current)):
-        return "BAD POSTURE"
-    # if current body landmarks y-coords are greater than the baseline,
-    # then that means the landmarks are further down than ideal, so could
-    # be indicative of slouching
-    if ((current[LEFT_SHOULDER][Y] >= ideal[LEFT_SHOULDER][Y] + 0.01) or (current[RIGHT_SHOULDER][Y] >= ideal[RIGHT_SHOULDER][Y] + 0.01)):
-        return 'BAD POSTURE'
-    if ((current[LEFT_EAR][Y] >= ideal[LEFT_EAR][Y] + 0.01) or (current[RIGHT_EAR][Y] >= ideal[RIGHT_EAR][Y] + 0.01)):
-        return 'BAD POSTURE'
-    return 'NICE'
+
+    list_of_slouch_checks = []
+    list_of_slouch_checks.append(check_confidence_thresholds(current))
+    list_of_slouch_checks.append(check_current_deviations(ideal, current))
+    #list_of_slouch_checks.append(check_head_tilt_down(current))
+    #list_of_slouch_checks.append(check_head_tilt_up(current))
+    list_of_slouch_checks.append(compare_ratios(ideal, current))
+    list_of_slouch_checks.append(cosine_similarity(ideal, current))
+
+    if any(list_of_slouch_checks):
+        return "bad posture"
+    else:
+        return "posture is fine"
 
 def read_camera():
     # define a video capture object
@@ -174,6 +107,7 @@ def read_camera():
             
             # quality assessment
             print(has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose))
+            print("=============================")
         current_frame += 1
         # press q button to quit
         if cv2.waitKey(1) == ord('q'):
