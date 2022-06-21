@@ -29,6 +29,7 @@ def check_confidence_thresholds(current):
     current[RIGHT_EAR][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
     current[LEFT_SHOULDER][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD or \
     current[RIGHT_SHOULDER][CONFIDENCE_VALUE] < CONFIDENCE_THRESHOLD:
+        print("not enough confidence")
         return True
     return False
 
@@ -38,29 +39,36 @@ def check_current_deviations(baseline, current):
     # be indicative of slouching because it has deviated a lot
 
     if ((current[LEFT_SHOULDER][Y] >= baseline[LEFT_SHOULDER][Y] + 0.10) or (current[RIGHT_SHOULDER][Y] >= baseline[RIGHT_SHOULDER][Y] + 0.10)):
+        print("too much deviation from baseline, shoulders")
         return True
     if ((current[LEFT_EAR][Y] >= baseline[LEFT_EAR][Y] + 0.10) or (current[RIGHT_EAR][Y] >= baseline[RIGHT_EAR][Y] + 0.10)):
+        print("too much deviation from baseline, ears")
         return True
     if ((current[LEFT_EYE][Y] >= baseline[LEFT_EYE][Y] + 0.10) or (current[RIGHT_EYE][Y] >= baseline[RIGHT_EYE][Y] + 0.10)):
+        print("too much deviation from baseline, eyes")
         return True
     if ((current[NOSE][Y] >= baseline[NOSE][Y] + 0.10)):
+        print("too much deviation from baseline, nose")
         return True
     return False
 
-def check_head_tilt_down(current):
-    # if eyes are at ear level, then head is tilted
-    if (current[LEFT_EYE][Y] < current[LEFT_EAR][Y] + 0.05) and (current[LEFT_EYE][Y] > current[LEFT_EAR][Y] - 0.05):
-        return True
-    if (current[RIGHT_EYE][Y] < current[RIGHT_EAR][Y] + 0.05) and (current[RIGHT_EYE][Y] > current[RIGHT_EAR][Y] - 0.05):
-        return True
-    return False
+# def check_head_tilt_down(current):
+#     # if eyes are at ear level, then head is tilted
+#     if (current[LEFT_EYE][Y] < current[LEFT_EAR][Y] + 0.05) and (current[LEFT_EYE][Y] > current[LEFT_EAR][Y] - 0.05):
+#         print("head tilt down")
+#         return True
+#     if (current[RIGHT_EYE][Y] < current[RIGHT_EAR][Y] + 0.05) and (current[RIGHT_EYE][Y] > current[RIGHT_EAR][Y] - 0.05):
+#         print("head tilt down")
+#         return True
+#     return False
 
-def check_head_tilt_up(current):
-    # if nose is super close to eyes, then head is tilted
-    average_eye_level = (current[LEFT_EYE][Y] + current[RIGHT_EYE][Y]) / 2
-    if current[NOSE][Y] < average_eye_level + 0.10:
-        return True
-    return False
+# def check_head_tilt_up(current):
+#     # if nose is super close to eyes, then head is tilted
+#     average_eye_level = (current[LEFT_EYE][Y] + current[RIGHT_EYE][Y]) / 2
+#     if current[NOSE][Y] < average_eye_level + 0.10:
+#         print("head tilt up")
+#         return True
+#     return False
 
 def get_ratio(pose):
     left_eye = pose[LEFT_EYE]
@@ -81,5 +89,6 @@ def compare_ratios(baseline, current):
     # if user is within SENSITIVITY% of being considered slouching
     # ex: difference in ratios is greater than 9% then it deviates a lot
     if (current_ratio > baseline_ratio * (1 + SENSITIVITY)) or (current_ratio < baseline_ratio * (1 - SENSITIVITY)):
+        print("ratios of baseline vs current are > 9%")
         return True
     return False

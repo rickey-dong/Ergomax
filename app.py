@@ -63,8 +63,8 @@ def has_bad_posture(ideal, current):
     list_of_slouch_checks = []
     list_of_slouch_checks.append(check_confidence_thresholds(current))
     list_of_slouch_checks.append(check_current_deviations(ideal, current))
-    list_of_slouch_checks.append(check_head_tilt_down(current))
-    list_of_slouch_checks.append(check_head_tilt_up(current))
+    #list_of_slouch_checks.append(check_head_tilt_down(current))
+    #list_of_slouch_checks.append(check_head_tilt_up(current))
     list_of_slouch_checks.append(compare_ratios(ideal, current))
     list_of_slouch_checks.append(cosine_similarity(ideal, current))
 
@@ -107,6 +107,7 @@ def read_camera():
             
             # quality assessment
             print(has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose))
+            print("=============================")
         current_frame += 1
         # press q button to quit
         if cv2.waitKey(1) == ord('q'):
