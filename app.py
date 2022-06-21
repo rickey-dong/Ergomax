@@ -1,7 +1,7 @@
 import cv2
 import tensorflow as tf
 import tensorflow_hub as hub
-# from cosine_similarity import *
+from cosine_similarity import *
 from quality_assessment import *
 
 """
@@ -47,73 +47,74 @@ def feature_extraction(image_file):
 
     return cleaner_2d_array
 
-baseline_image = tf.io.read_file("tilt_head_up.jpg")
+baseline_image = tf.io.read_file("baseline.jpg")
 baseline_image = tf.compat.v1.image.decode_jpeg(baseline_image)
 baseline_image = tf.expand_dims(baseline_image, axis=0)
 baseline_image = tf.cast(tf.image.resize_with_pad(baseline_image, 192, 192), dtype=tf.int32)
 keypoints_of_ideal_pose = feature_extraction(baseline_image)
-print(keypoints_of_ideal_pose)
 
-# def has_bad_posture(ideal, current):
-#     """
-#     takes in two lists of keypoints and confidence values
-#     returns true if user has bad posture currently,
-#     false otherwise
-#     """
+def has_bad_posture(ideal, current):
+    """
+    takes in two lists of keypoints and confidence values
+    returns true if user has bad posture currently,
+    false otherwise
+    """
 
-#     list_of_slouch_checks = []
-#     list_of_slouch_checks.append(check_confidence_thresholds(current))
-#     list_of_slouch_checks.append(check_current_deviations(ideal, current))
-#     list_of_slouch_checks.append(check_head_tilt_down(current))
-#     list_of_slouch_checks.append(check_head_tilt_up(current))
-#     list_of_slouch_checks.append(compare_ratios(ideal, current))
+    list_of_slouch_checks = []
+    list_of_slouch_checks.append(check_confidence_thresholds(current))
+    list_of_slouch_checks.append(check_current_deviations(ideal, current))
+    list_of_slouch_checks.append(check_head_tilt_down(current))
+    list_of_slouch_checks.append(check_head_tilt_up(current))
+    list_of_slouch_checks.append(compare_ratios(ideal, current))
+    list_of_slouch_checks.append(cosine_similarity(ideal, current))
 
-#     if any(list_of_slouch_checks):
-#         return "bad posture"
-#     else:
-#         return "posture is fine"
+    if any(list_of_slouch_checks):
+        return "bad posture"
+    else:
+        return "posture is fine"
 
-# def read_camera():
-#     # define a video capture object
-#     # with the built-in webcam device
-#     current_frame = 0
-#     vid = cv2.VideoCapture(0)
-#     seconds = 4 # every <> seconds take a snapshot of pose
-#     fps = 30 # gets frame rate attribute
-#     frames = fps * seconds # every (fps*seconds) frames, take a pic of pose
-#     #bad_posture_check = 0 #
-#     while vid.isOpened():
-#         ret, frame = vid.read()
-#         # ret is True or False
-#         # frame is the actual snapshot
-#         if ret == False:
-#             break
-#         if current_frame % frames == 0:
-#             cv2.imwrite("current.jpg", frame)
-#             # BEGIN FEATURE EXTRACTION
-#             # (labeling the eyes, nose, etc.)
+def read_camera():
+    # define a video capture object
+    # with the built-in webcam device
+    current_frame = 0
+    vid = cv2.VideoCapture(0)
+    seconds = 4 # every <> seconds take a snapshot of pose
+    fps = 30 # gets frame rate attribute
+    frames = fps * seconds # every (fps*seconds) frames, take a pic of pose
+    #bad_posture_check = 0 #
+    while vid.isOpened():
+        ret, frame = vid.read()
+        # ret is True or False
+        # frame is the actual snapshot
+        if ret == False:
+            break
+        if current_frame % frames == 0:
+            cv2.imwrite("current.jpg", frame)
+            # BEGIN FEATURE EXTRACTION
+            # (labeling the eyes, nose, etc.)
             
-#             # load the input image
-#             image = tf.io.read_file("current.jpg")
-#             image = tf.compat.v1.image.decode_jpeg(image)
-#             image = tf.expand_dims(image, axis=0)
+            # load the input image
+            image = tf.io.read_file("current.jpg")
+            image = tf.compat.v1.image.decode_jpeg(image)
+            image = tf.expand_dims(image, axis=0)
 
-#             # resize and pad the image
-#             # the PoseNet model expects 192 by 192 size
-#             image = tf.cast(tf.image.resize_with_pad(image, 192, 192), dtype=tf.int32)
+            # resize and pad the image
+            # the PoseNet model expects 192 by 192 size
+            image = tf.cast(tf.image.resize_with_pad(image, 192, 192), dtype=tf.int32)
 
-#             # extract features
-#             keypoints_of_current_pose = feature_extraction(image)
+            # extract features
+            keypoints_of_current_pose = feature_extraction(image)
             
-#             # quality assessment
-#             print(has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose))
-#         current_frame += 1
-#         # press q button to quit
-#         if cv2.waitKey(1) == ord('q'):
-#             #reports how many checks is performed by the program
-#             #total_amount of checks = current_frame % frames
-#             break
-#     vid.release()
-#     cv2.destroyAllWindows()
-#     # percent_spent_in_bad_posture = bad_posture_check/total_amount of checks
-# read_camera()
+            # quality assessment
+            print(has_bad_posture(keypoints_of_ideal_pose, keypoints_of_current_pose))
+        current_frame += 1
+        # press q button to quit
+        if cv2.waitKey(1) == ord('q'):
+            #reports how many checks is performed by the program
+            #total_amount of checks = current_frame % frames
+            break
+    vid.release()
+    cv2.destroyAllWindows()
+    # percent_spent_in_bad_posture = bad_posture_check/total_amount of checks
+
+read_camera()
