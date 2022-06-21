@@ -2,14 +2,17 @@
 
 {% block title %} Home {% endblock %}
 {% block body %}
-{% if user is not defined %}
-<form action="submit">
-    <input type="submit" value="run detection" />
-</form>
-<button <a href="" <h1>Please <a class="hoverline" href="/login">log in</a> to view your stats/notifications</h1>
-    {% else %}
+  <form action="submit">
+    <input class="btn btn-secondary" type="submit" value="run detection" />
+  </form>
+  <br>
+  <button class="btn btn-secondary">
+    Please <a class="hoverline" href="/login" style="color: blue;">log in</a> to view your stats/notifications
+  </button>
+
+  <center>
     <h1> Your progress</h1>
     <p> Current streak: {days} days!</p>
     <p> Your posture over the past 7 days: {status}</p>
-    {% endif %}
-    {% endblock %}
+  </center>
+{% endblock %}
