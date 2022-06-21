@@ -82,13 +82,13 @@ def register():
 @app.route("/about", methods=['GET', 'POST'])
 def about():
     if is_logged_in():
-        return render_template("about.html", user=session['name'])
+        return render_template("about.html")
     return redirect("/login")
 
 @app.route("/example", methods=['GET', 'POST'])
 def example():
     if is_logged_in():
-        return render_template("example.html", user=session['name'])
+        return render_template("example.html")
     return redirect("/login")
 
 if __name__ == "__main__":
