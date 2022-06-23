@@ -29,7 +29,7 @@ def cosine_similarity(x, y):
     cosine_similarity = dot_product / (magnitude_x * magnitude_y)
     
     if cosine_similarity < 0.9985:
-        print("cosine similarity flagged")
+        print("Current pose not similar enough to baseline according to cosine similarity.")
         return True
     return False
 

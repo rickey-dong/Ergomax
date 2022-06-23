@@ -63,15 +63,13 @@ def has_bad_posture(ideal, current):
     list_of_slouch_checks = []
     list_of_slouch_checks.append(check_confidence_thresholds(current))
     list_of_slouch_checks.append(check_current_deviations(ideal, current))
-    #list_of_slouch_checks.append(check_head_tilt_down(current))
-    #list_of_slouch_checks.append(check_head_tilt_up(current))
     list_of_slouch_checks.append(compare_ratios(ideal, current))
     list_of_slouch_checks.append(cosine_similarity(ideal, current))
 
     if any(list_of_slouch_checks):
-        return "bad posture"
+        return "Bad posture!"
     else:
-        return "posture is fine"
+        return "Posture is fine!"
 
 def read_camera():
     # define a video capture object
